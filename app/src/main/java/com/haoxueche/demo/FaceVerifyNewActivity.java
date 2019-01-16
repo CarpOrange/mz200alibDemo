@@ -7,6 +7,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.params.Face;
+import android.media.Image;
+import android.media.ImageReader;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextPaint;
@@ -16,6 +18,7 @@ import android.view.TextureView;
 import com.haoxueche.mz200alib.activity.BaseActivity;
 import com.haoxueche.mz200alib.camera2.Camera2Manager;
 import com.haoxueche.mz200alib.camera2.Camera2Manager.FaceDectionListener;
+import com.haoxueche.mz200alib.camera2.Camera2Manager.OnImageCallbackListener;
 import com.haoxueche.mz200alib.camera2.Camera2Manager.PictureCallback;
 import com.haoxueche.mz200alib.camera2.CameraConfig;
 import com.haoxueche.mz200alib.util.CameraUtil;
@@ -53,7 +56,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class FaceVerifyNewActivity extends BaseActivity implements FaceDectionListener,
-        PictureCallback {
+        PictureCallback, OnImageCallbackListener {
 
     private final String TAG = "FaceVerifyNewActivity";
     // 一个空字节数组
@@ -102,6 +105,7 @@ public class FaceVerifyNewActivity extends BaseActivity implements FaceDectionLi
             camera2Manager = Camera2Manager.newInstance(ContextHolder.getInstance(), textureView
                     , faceView, null, cameraRotate, isFrontCamera
                     , flashOn, FaceVerifyNewActivity.this);
+            camera2Manager.setOnImageCallbackListener(FaceVerifyNewActivity.this);
             camera2Manager.openCamera();
         }
 
@@ -141,6 +145,9 @@ public class FaceVerifyNewActivity extends BaseActivity implements FaceDectionLi
                             textureView
                             , faceView, null, cameraRotate, isFrontCamera
                             , flashOn, FaceVerifyNewActivity.this);
+                    //设置预览画面的回调
+                    camera2Manager.setOnImageCallbackListener(FaceVerifyNewActivity.this);
+                    //开启相机
                     camera2Manager.openCamera();
                 } else {
                     textureView.setSurfaceTextureListener(mSurfaceTextureListener);
@@ -153,7 +160,7 @@ public class FaceVerifyNewActivity extends BaseActivity implements FaceDectionLi
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long integer) throws Exception {
-                        camera2Manager.setFaceDectionListener(FaceVerifyNewActivity.this);
+                        camera2Manager.setFaceDectionListener(FaceVerifyNewActivity.this);//开启人脸检测
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -391,7 +398,6 @@ public class FaceVerifyNewActivity extends BaseActivity implements FaceDectionLi
                 .map(new Function<byte[], String[]>() {
                     @Override
                     public String[] apply(@NonNull byte[] bytes) throws Exception {
-                        L.i("apply: " + Thread.currentThread().getName());
                         L.i("accept: " + bytes.length);
                         // 外置摄像头故障
                         if (bytes.length == 0) {
@@ -485,5 +491,16 @@ public class FaceVerifyNewActivity extends BaseActivity implements FaceDectionLi
             getFace = true;
             takePicture();
         }
+    }
+
+    /**
+     * 预览画面回调
+     * @param reader the ImageReader the callback is associated with.
+     */
+    @Override
+    public void onImageCallback(ImageReader reader) {
+        Image image = reader.acquireNextImage();
+        byte[] nv21 = ImageUtil.getDataFromImage(image, ImageUtil.NV21);
+        //TODO 拿到数据后自己的业务操作
     }
 }

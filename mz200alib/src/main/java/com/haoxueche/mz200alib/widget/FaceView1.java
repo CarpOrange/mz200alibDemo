@@ -44,19 +44,29 @@ public class FaceView1 extends AppCompatImageView {
      *
      * @param faces
      */
-    public synchronized void setFaces(Rect[] faces) {
-        this.mFaces = faces;
-        postInvalidate();
+    public void setFaces(final Rect[] faces) {
+        post(new Runnable() {
+            @Override
+            public void run() {
+                FaceView1.this.mFaces = faces;
+                invalidate();
+            }
+        });
     }
 
-    public synchronized void clearFaces() {
-        mFaces = null;
-        invalidate();
+    public void clearFaces() {
+      post(new Runnable() {
+          @Override
+          public void run() {
+              mFaces = null;
+              invalidate();
+          }
+      });
     }
 
 
     @Override
-    protected synchronized void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         //会导致异常，所以加了synchronized  (java.lang.ArrayIndexOutOfBoundsException length=0; index=0)
         if (mFaces == null || mFaces.length < 1) {
             super.onDraw(canvas);

@@ -69,6 +69,8 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
     private Disposable disposable;
 
     private boolean isCameraOpened;
+    //是否已经开始人脸检测
+    private boolean faceDectStarted;
 
 
     @SuppressLint("CheckResult")
@@ -124,19 +126,6 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
         finish();
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-    }
-
-
-    /**
-     * 初始化数据
-     */
-    private void initData() {
-    }
-
     /**
      * 拍照超时自动结束
      *
@@ -182,19 +171,31 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
 
         surfaceView = new SurfaceView(this);
         surfaceHolder = surfaceView.getHolder();
+        //显示预览画面并在获取到预览回调两秒后开启人脸检测
         surfaceHolder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(final SurfaceHolder holder) {
                 surfaceView.setVisibility(View.VISIBLE);
                 CameraManager.getInstance().starPreview(CameraManager.DEFAULT_WIDTH,
                         CameraManager.DEFAULT_HEIGHT, surfaceHolder, new Camera.PreviewCallback() {
+                            /**
+                             * 预览数据回调方法
+                             * @param data
+                             * @param camera
+                             */
                             @Override
                             public void onPreviewFrame(byte[] data, Camera camera) {
-                                if (camera != null) {
-                                    camera.setPreviewCallback(null);
-                                }
-                                Log.i(TAG, "onPreviewFrame: ");
+                                //TODO 写自己的业务逻辑
 
+
+
+                                //防止多次开启人脸检测
+                                if(faceDectStarted) {
+                                    return;
+                                }
+                                faceDectStarted = true;
+                                L.i("onPreviewFrame: ");
+                                //两秒后开始人脸检测
                                 Observable.timer(2, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
 
                                     @Override
@@ -252,19 +253,23 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
         }
     }
 
-
+    /**
+     * 开启红外补光
+     */
     private void openFlashLight() {
-        if (CameraManager.getInstance().getCamera() != null && CameraManager.getInstance()
-                .getCamera().getParameters() != null) {
-            try {
-                //开启红外补光灯，针对外置摄像头
-                CameraManager.openIRLED();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            //开启红外补光灯，针对外置摄像头
+            CameraManager.openIRLED();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    /**
+     * 人脸检测回调
+     * @param faces
+     * @param camera
+     */
     @Override
     public void onFaceDetection(Camera.Face[] faces, Camera camera) {
         faceView.setFaces(faces);
@@ -348,7 +353,6 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String path) throws Exception {
-                        Log.i(TAG, "accept: " + Thread.currentThread().getName());
                         Log.i(TAG, "accept file len: " + new File(path).length() + "-------\nfile" +
                                 " path:" + path);
                         finish(RESULT_OK);
@@ -361,7 +365,7 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
                         // 外置摄像头故障
                         if (throwable.getMessage().equals("camera blue")) {
                             T.showSpeak("外置摄像头故障，请学员和教练签退并通知维护人员修理设备");
-                            finish(CameraManager.RESULT_HARDWARE_ERROR);
+                            finish(CameraManager.RESULT_OUT_CAMERA_ERROR);
                         } else {
                             finish(RESULT_CANCELED);
                         }

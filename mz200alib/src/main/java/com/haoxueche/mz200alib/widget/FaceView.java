@@ -54,8 +54,13 @@ public class FaceView extends AppCompatImageView {
     }
 
     public void clearFaces() {
-        mFaces = null;
-        invalidate();
+       post(new Runnable() {
+           @Override
+           public void run() {
+               mFaces = null;
+               invalidate();
+           }
+       });
     }
 
 
@@ -72,8 +77,6 @@ public class FaceView extends AppCompatImageView {
             mRect.set(mFaces[i].rect);
             mMatrix.mapRect(mRect);
             if (cameraId == CameraManager.CAMERA_FACING_FRONT) {
-//                mFaceIndicator.setBounds(Math.round(mRect.left), Math.round(mRect.top),
-//                        Math.round(mRect.right), Math.round(mRect.bottom));
 
                 mFaceIndicator.setBounds(getWidth() - Math.round(mRect.right), Math.round(mRect.top),
                         getWidth() - Math.round(mRect.left), Math.round(mRect.bottom));

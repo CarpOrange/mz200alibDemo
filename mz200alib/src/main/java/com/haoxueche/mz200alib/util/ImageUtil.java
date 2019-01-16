@@ -3,8 +3,10 @@ package com.haoxueche.mz200alib.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.media.Image;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -14,7 +16,10 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 
+import com.haoxueche.winterlog.L;
+
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Created by xiezhongming on 17/9/22.
@@ -22,6 +27,9 @@ import java.io.ByteArrayOutputStream;
  */
 
 public class ImageUtil {
+    public static final int YUV420P = 1;
+    public static final int YUV420SP = 2;
+    public static final int NV21 = 3;
 
     /**
      * 压缩文件
@@ -144,5 +152,97 @@ public class ImageUtil {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         return baos.toByteArray();
     }
+
+    public static byte[] getDataFromImage(Image image, int colorFormat) {
+        if (colorFormat != YUV420P && colorFormat != NV21) {
+            throw new IllegalArgumentException("only support COLOR_FormatI420 " + "and " +
+                    "COLOR_FormatNV21");
+        }
+        if (!isImageFormatSupported(image)) {
+            throw new RuntimeException("can't convert Image to byte array, format " + image
+                    .getFormat());
+        }
+        Rect crop = image.getCropRect();
+        int format = image.getFormat();
+        int width = crop.width();
+        int height = crop.height();
+        Image.Plane[] planes = image.getPlanes();
+        byte[] data = new byte[width * height * ImageFormat.getBitsPerPixel(format) / 8];
+        byte[] rowData = new byte[planes[0].getRowStride()];
+        L.i( "get data from " + planes.length + " planes");
+        int channelOffset = 0;
+        int outputStride = 1;
+        for (int i = 0; i < planes.length; i++) {
+            switch (i) {
+                case 0:
+                    channelOffset = 0;
+                    outputStride = 1;
+                    break;
+                case 1:
+                    if (colorFormat == YUV420P) {
+                        channelOffset = width * height;
+                        outputStride = 1;
+                    } else if (colorFormat == NV21) {
+                        channelOffset = width * height + 1;
+                        outputStride = 2;
+                    }
+                    break;
+                case 2:
+                    if (colorFormat == YUV420P) {
+                        channelOffset = (int) (width * height * 1.25);
+                        outputStride = 1;
+                    } else if (colorFormat == NV21) {
+                        channelOffset = width * height;
+                        outputStride = 2;
+                    }
+                    break;
+            }
+            ByteBuffer buffer = planes[i].getBuffer();
+            int rowStride = planes[i].getRowStride();
+            int pixelStride = planes[i].getPixelStride();
+            L.i( "pixelStride " + pixelStride);
+            L.i( "rowStride " + rowStride);
+            L.i( "width " + width);
+            L.i( "height " + height);
+            L.i( "buffer size " + buffer.remaining());
+            int shift = (i == 0) ? 0 : 1;
+            int w = width >> shift;
+            int h = height >> shift;
+            buffer.position(rowStride * (crop.top >> shift) + pixelStride * (crop.left >> shift));
+            for (int row = 0; row < h; row++) {
+                int length;
+                if (pixelStride == 1 && outputStride == 1) {
+                    length = w;
+                    buffer.get(data, channelOffset, length);
+                    channelOffset += length;
+                } else {
+                    length = (w - 1) * pixelStride + 1;
+                    buffer.get(rowData, 0, length);
+                    for (int col = 0; col < w; col++) {
+                        data[channelOffset] = rowData[col * pixelStride];
+                        channelOffset += outputStride;
+                    }
+                }
+                if (row < h - 1) {
+                    buffer.position(buffer.position() + rowStride - length);
+                }
+            }
+            L.i( "Finished reading data from plane " + i);
+        }
+        image.close();
+        return data;
+    }
+
+    private static boolean isImageFormatSupported(Image image) {
+        int format = image.getFormat();
+        switch (format) {
+            case ImageFormat.YUV_420_888:
+            case ImageFormat.NV21:
+            case ImageFormat.YV12:
+                return true;
+        }
+        return false;
+    }
+
 
 }

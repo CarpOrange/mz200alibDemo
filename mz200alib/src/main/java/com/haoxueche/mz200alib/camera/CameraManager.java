@@ -1,6 +1,7 @@
 package com.haoxueche.mz200alib.camera;
 
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -35,12 +36,12 @@ public class CameraManager {
     /**
      * The facing of the camera is opposite to that of the screen.
      */
-    public static final int CAMERA_FACING_BACK = 0;
+    public static final int CAMERA_FACING_BACK = CameraInfo.CAMERA_FACING_BACK;
 
     /**
      * The facing of the camera is the same as that of the screen.
      */
-    public static int CAMERA_FACING_FRONT = 1;
+    public static int CAMERA_FACING_FRONT = CameraInfo.CAMERA_FACING_FRONT;
 
     private final static CameraManager INSTANCE = new CameraManager();
     public static final int DEFAULT_WIDTH = 640;
@@ -85,34 +86,6 @@ public class CameraManager {
         }
         return camera;
     }
-
-    /**
-     * 打开指定摄像头
-     *
-     * @param cameraId
-     */
-    public Camera openCameraNotClose(int cameraId) {
-//        if (this.cameraId == cameraId
-//                && camera != null) {
-//            return camera;
-//        }
-        if(isCameraUsing) {
-            return null;
-        }
-        this.cameraId = cameraId;
-        try {
-            camera = Camera.open(cameraId);
-            if (cameraId != CameraManager.CAMERA_FACING_FRONT && SharePreferUtil.isInsideCameraRotate()) {
-                camera.setDisplayOrientation(180);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "openCamera: 开启摄像头失败");
-            camera = null;
-            e.printStackTrace();
-        }
-        return camera;
-    }
-
 
     /**
      * 开始预览
