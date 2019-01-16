@@ -1,0 +1,2 @@
+com.haoxueche.winterlog
+string app_name

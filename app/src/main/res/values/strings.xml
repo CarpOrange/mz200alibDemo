@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Demo</string>
+    <string name="id_card_no">身份证串号</string>
+    <string name="ic_card_data">ic卡数据</string>
+</resources>
