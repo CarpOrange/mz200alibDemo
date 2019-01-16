@@ -65,6 +65,9 @@
         <activity android:name=".FaceVerifyNewActivity"
                   android:screenOrientation="landscape"
                   android:launchMode="singleTask"/>
+        <activity android:name=".FaceVerifyActivity"
+                  android:screenOrientation="landscape"
+                  android:launchMode="singleTask"/>
     </application>
 
 </manifest>

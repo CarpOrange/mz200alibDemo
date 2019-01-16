@@ -28,4 +28,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, FaceVerifyNewActivity.class);
         startActivity(intent);
     }
+
+    public void cameraTest(View view) {
+        Intent intent = new Intent(this, FaceVerifyActivity.class);
+        startActivity(intent);
+    }
 }
