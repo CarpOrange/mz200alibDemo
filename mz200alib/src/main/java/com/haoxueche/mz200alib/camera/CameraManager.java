@@ -29,9 +29,6 @@ import io.reactivex.schedulers.Schedulers;
 public class CameraManager {
 
     private final String TAG = "CameraManager";
-    public final static int RESULT_HARDWARE_ERROR = 6; //相机故障
-    public final static int RESULT_CAMERA_USING = 7; //相机使用中
-    public final static int RESULT_OUT_CAMERA_ERROR = 8; //外置相机蓝屏
 
     /**
      * The facing of the camera is opposite to that of the screen.
@@ -50,6 +47,7 @@ public class CameraManager {
     private Camera camera;
     private int cameraId;
     private boolean isCameraUsing;
+
 
     private boolean isStartFaceDetect = false;
 

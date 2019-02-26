@@ -1,4 +1,4 @@
-package com.haoxueche.demo;
+package com.haoxueche.demo.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -14,8 +14,11 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.haoxueche.demo.R;
+import com.haoxueche.demo.util.MsgConfig;
 import com.haoxueche.mz200alib.activity.BaseActivity;
 import com.haoxueche.mz200alib.camera.CameraManager;
+import com.haoxueche.mz200alib.util.CameraConfig;
 import com.haoxueche.mz200alib.util.ContextHolder;
 import com.haoxueche.mz200alib.util.FileUtil;
 import com.haoxueche.mz200alib.util.ImageUtil;
@@ -27,7 +30,6 @@ import com.haoxueche.winterlog.L;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
@@ -52,8 +54,6 @@ import io.reactivex.schedulers.Schedulers;
 public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetectionListener {
 
     private final String TAG = "FaceVerifyActivity";
-    // 一个空字节数组
-    public static final byte[] EMPTY_BYTES = new byte[0];
 
     protected FrameLayout cameraPreview;
     protected FaceView faceView;
@@ -62,7 +62,7 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
     // 是否检测到人脸
     private boolean getFace = false;
     // 摄像头ID
-    private int cameraId = CameraInfo.CAMERA_FACING_FRONT;
+    private int cameraId = CameraInfo.CAMERA_FACING_BACK;
     // 是否强制拍照
     private boolean forceTakePicture = false;
     // 超时
@@ -301,7 +301,7 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
                                 bitmap.getByteCount());
                         // 外置摄像头故障
                         if (bitmap == null) {
-                            return EMPTY_BYTES;
+                            return MsgConfig.EMPTY_BYTES;
                         }
                         byte[] bytes;
                         //是否cameraId 为1 即外置摄像头，需要镜面翻转
@@ -328,11 +328,11 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
                         // 外置摄像头故障
                         if (bytes == null) {
                             throw new IllegalStateException("bytes null");
-                        } else if (Arrays.equals(bytes, mErrorBlueData)) {
+                        } else if (FileUtil.getSimilarity(bytes, mErrorBlueData) > 0.9) {
                             throw new IllegalStateException("camera blue");
                         }
 
-                        return ImageUtil.compressImage(bitmap, 35);
+                        return bytes;
                     }
                 })
                 .map(new Function<byte[], String>() {
@@ -365,7 +365,7 @@ public class FaceVerifyActivity extends BaseActivity implements Camera.FaceDetec
                         // 外置摄像头故障
                         if (throwable.getMessage().equals("camera blue")) {
                             T.showSpeak("外置摄像头故障，请学员和教练签退并通知维护人员修理设备");
-                            finish(CameraManager.RESULT_OUT_CAMERA_ERROR);
+                            finish(CameraConfig.RESULT_OUT_CAMERA_ERROR);
                         } else {
                             finish(RESULT_CANCELED);
                         }

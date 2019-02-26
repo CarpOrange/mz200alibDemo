@@ -1,8 +1,9 @@
-package com.haoxueche.demo;
+package com.haoxueche.demo.ui.activity;
 
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.haoxueche.demo.R;
 import com.haoxueche.mz200alib.activity.NfcIdCardActivity;
 
 public class IdCardActivity extends NfcIdCardActivity {

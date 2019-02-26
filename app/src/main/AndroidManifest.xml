@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.NFC"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- 浮动窗口 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:name=".App"
@@ -15,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity"
+        <activity android:name=".ui.activity.MainActivity"
             android:screenOrientation="landscape"
             android:launchMode="singleTask">
             <intent-filter>
@@ -24,7 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ICCardActivity"
+        <activity android:name=".ui.activity.ICCardActivity"
                   android:screenOrientation="landscape"
                   android:launchMode="singleTask">
             <intent-filter>
@@ -41,7 +43,7 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter"/>
         </activity>
-        <activity android:name=".IdCardActivity"
+        <activity android:name=".ui.activity.IdCardActivity"
                   android:screenOrientation="landscape"
                   android:launchMode="singleTask">
             <intent-filter>
@@ -62,10 +64,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".FaceVerifyNewActivity"
+        <activity android:name=".ui.activity.FaceVerifyNewActivity"
                   android:screenOrientation="landscape"
                   android:launchMode="singleTask"/>
-        <activity android:name=".FaceVerifyActivity"
+        <activity android:name=".ui.activity.FaceVerifyActivity"
                   android:screenOrientation="landscape"
                   android:launchMode="singleTask"/>
     </application>

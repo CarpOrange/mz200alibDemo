@@ -1,4 +1,4 @@
-package com.haoxueche.demo;
+package com.haoxueche.demo.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -15,12 +15,13 @@ import android.text.TextPaint;
 import android.view.KeyEvent;
 import android.view.TextureView;
 
+import com.haoxueche.demo.R;
 import com.haoxueche.mz200alib.activity.BaseActivity;
 import com.haoxueche.mz200alib.camera2.Camera2Manager;
 import com.haoxueche.mz200alib.camera2.Camera2Manager.FaceDectionListener;
 import com.haoxueche.mz200alib.camera2.Camera2Manager.OnImageCallbackListener;
 import com.haoxueche.mz200alib.camera2.Camera2Manager.PictureCallback;
-import com.haoxueche.mz200alib.camera2.CameraConfig;
+import com.haoxueche.mz200alib.util.CameraConfig;
 import com.haoxueche.mz200alib.util.CameraUtil;
 import com.haoxueche.mz200alib.util.ContextHolder;
 import com.haoxueche.mz200alib.util.FileUtil;
@@ -59,8 +60,6 @@ public class FaceVerifyNewActivity extends BaseActivity implements FaceDectionLi
         PictureCallback, OnImageCallbackListener {
 
     private final String TAG = "FaceVerifyNewActivity";
-    // 一个空字节数组
-    public static final byte[] EMPTY_BYTES = new byte[0];
     //人脸检测延迟的时间
     public static final int FACE_DECT_DELAY_TIME = 2;
 

@@ -100,7 +100,7 @@ public abstract class NfcActivity extends AppCompatActivity implements ICCardLis
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             byte[] bytesId = tag.getId();// 获取id数组get
 
-            cardNo = MessageUtil.bytesToHexStringReversal(bytesId);
+            cardNo = MessageUtil.bytesToHexString(bytesId);
             generatePassword();
             tag = patchTag(tag); //有的手机上没有这一步会崩溃
 
