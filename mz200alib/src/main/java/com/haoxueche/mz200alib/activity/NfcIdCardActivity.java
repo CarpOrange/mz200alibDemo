@@ -9,6 +9,7 @@ import android.nfc.Tag;
 import android.nfc.tech.NfcB;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 
 import com.haoxueche.mz200alib.util.IDCardListener;
 import com.haoxueche.mz200alib.util.MessageUtil;
@@ -20,7 +21,7 @@ import com.haoxueche.winterlog.L;
  * 用到Nfc的界面
  */
 
-public abstract class NfcIdCardActivity extends BaseActivity implements IDCardListener {
+public abstract class NfcIdCardActivity extends AppCompatActivity implements IDCardListener {
     private static final String TAG = "NfcIdCardActivity";
 
     private NfcAdapter nfcAdapter;
