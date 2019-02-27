@@ -32,7 +32,7 @@ public class App extends Application {
 
        //保持cpu运转
         PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-        cpuWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "App");
+        cpuWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "App");
         cpuWakeLock.acquire();
     }
 }

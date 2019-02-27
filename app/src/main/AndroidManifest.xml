@@ -26,6 +26,10 @@
     <!--wakeLock-->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+    <!--设置时间-->
+    <uses-permission android:name="android.permission.SET_TIME"/>
+    <uses-permission android:name="android.permission.SET_TIME_ZONE"/>
+
     <application
         android:name=".App"
         android:allowBackup="true"
