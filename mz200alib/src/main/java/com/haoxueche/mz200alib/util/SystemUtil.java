@@ -61,10 +61,17 @@ public class SystemUtil {
      *
      * @param context
      * @param seconds 锁屏时间，秒
+     * @return 设置是否生效
      */
-    public static void setScreenLockTime(Context context, int seconds) {
-        Settings.System.putInt(context.getContentResolver(), android.provider.Settings.System
-                .SCREEN_OFF_TIMEOUT, 1000 * seconds); //毫秒数
+    public static boolean setScreenLockTime(Context context, int seconds) {
+        boolean setSucc = false;
+       try {
+           setSucc =  Settings.System.putInt(context.getContentResolver(), android.provider.Settings.System
+                   .SCREEN_OFF_TIMEOUT, 1000 * seconds); //毫秒数
+       } catch (Exception e) {
+           L.e(e);
+       }
+        return setSucc;
     }
 
 

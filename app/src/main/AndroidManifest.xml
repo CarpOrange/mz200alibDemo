@@ -21,7 +21,10 @@
 
     <!--修改系统设置-->
     <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
-    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <!--<uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>-->
+
+    <!--wakeLock-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".App"

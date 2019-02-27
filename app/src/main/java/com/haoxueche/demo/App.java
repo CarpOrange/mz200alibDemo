@@ -1,6 +1,8 @@
 package com.haoxueche.demo;
 
 import android.app.Application;
+import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 
 import com.haoxueche.mz200alib.location.LocationHelper;
 import com.haoxueche.winterlog.timber.LogUtil;
@@ -9,6 +11,8 @@ import com.haoxueche.winterlog.timber.LogUtil;
  * Created by Lyc(987424501@qq.com) on 2019/1/14.
  */
 public class App extends Application {
+    private WakeLock cpuWakeLock;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -25,5 +29,10 @@ public class App extends Application {
        } catch (Exception e) {
             e.printStackTrace();
        }
+
+       //保持cpu运转
+        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+        cpuWakeLock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "App");
+        cpuWakeLock.acquire();
     }
 }
