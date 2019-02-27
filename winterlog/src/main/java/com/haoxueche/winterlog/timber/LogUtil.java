@@ -12,6 +12,5 @@ public class LogUtil {
         if(BuildConfig.DEBUG) {
             Timber.plant(new DebugTree());
         }
-//        Timber.plant(new LoganTree(context, password, savePath, saveDay, maxSize));
     }
 }

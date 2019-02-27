@@ -3,14 +3,25 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.haoxueche.demo">
 
+    <!--文件读写-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <!--读卡-->
     <uses-permission android:name="android.permission.NFC"/>
+
     <!-- 浮动窗口 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <!--定位-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!--读取imei等-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <!--修改系统设置-->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
 
     <application
         android:name=".App"
@@ -21,18 +32,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.activity.MainActivity"
-            android:screenOrientation="landscape"
-            android:launchMode="singleTask">
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.ICCardActivity"
-                  android:screenOrientation="landscape"
-                  android:launchMode="singleTask">
+        <activity
+            android:name=".ui.activity.ICCardActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
             </intent-filter>
@@ -47,9 +60,10 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter"/>
         </activity>
-        <activity android:name=".ui.activity.IdCardActivity"
-                  android:screenOrientation="landscape"
-                  android:launchMode="singleTask">
+        <activity
+            android:name=".ui.activity.IdCardActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
 
@@ -68,12 +82,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.activity.FaceVerifyNewActivity"
-                  android:screenOrientation="landscape"
-                  android:launchMode="singleTask"/>
-        <activity android:name=".ui.activity.FaceVerifyActivity"
-                  android:screenOrientation="landscape"
-                  android:launchMode="singleTask"/>
+        <receiver android:name="com.haoxueche.mz200alib.receiver.ShutdownBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

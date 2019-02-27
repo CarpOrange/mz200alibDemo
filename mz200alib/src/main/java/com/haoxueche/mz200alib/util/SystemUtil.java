@@ -1,7 +1,7 @@
 package com.haoxueche.mz200alib.util;
 
 import android.content.Context;
-import android.os.PowerManager;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import com.haoxueche.winterlog.L;
@@ -9,7 +9,6 @@ import com.temolin.hardware.GPIO_Pin;
 
 import java.lang.reflect.Method;
 
-import static android.content.Context.POWER_SERVICE;
 import static android.content.Context.TELEPHONY_SERVICE;
 
 /**
@@ -19,40 +18,6 @@ import static android.content.Context.TELEPHONY_SERVICE;
 
 public class SystemUtil {
     public static final String TAG = "SystemUtil";
-
-    private static PowerManager.WakeLock mWakeLock;
-     private static PowerManager pm = null;
-
-
-    /**
-     * 强制开启屏幕
-     */
-    public static void startWakeLock(boolean stop) {
-        if (pm == null) {
-            pm = (PowerManager) ContextHolder.getInstance().getSystemService(POWER_SERVICE);
-        }
-
-        if (pm.isScreenOn()) {
-            return;
-        }
-        stopWakeLock();
-        mWakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager
-                .ACQUIRE_CAUSES_WAKEUP, "wakeLock");
-        mWakeLock.acquire();
-        if (stop) {
-            stopWakeLock();
-        }
-    }
-
-    /**
-     * 在休眠时间到后，屏幕会自动关闭。
-     */
-    public static void stopWakeLock() {
-        if (mWakeLock != null) {
-            mWakeLock.release();
-            mWakeLock = null;
-        }
-    }
 
     public static void setGpioHight(int gpioIndex) {
         L.i( "setGpioHight==" + gpioIndex);
@@ -90,6 +55,16 @@ public class SystemUtil {
             L.e(e);
         }
         return imei2;
+    }
+
+    /**
+     *
+     * @param context
+     * @param seconds 锁屏时间，秒
+     */
+    public static void setScreenLockTime(Context context, int seconds) {
+        Settings.System.putInt(context.getContentResolver(), android.provider.Settings.System
+                .SCREEN_OFF_TIMEOUT, 1000 * seconds); //毫秒数
     }
 
 
