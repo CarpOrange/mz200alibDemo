@@ -1,6 +1,7 @@
 package com.haoxueche.mz200alib.util;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
@@ -93,6 +94,14 @@ public class SystemUtil {
             L.e(e);
         }
         return false;
+    }
+
+    /**
+     * @param applicationInfo
+     * @return 是否系统app
+     */
+    public static boolean isSystemApp(ApplicationInfo applicationInfo) {
+        return ((applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0);
     }
 
 
