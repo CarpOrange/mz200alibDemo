@@ -74,5 +74,26 @@ public class SystemUtil {
         return setSucc;
     }
 
+    /**
+     * 禁止状态栏下拉
+     *
+     * @param context
+     * @return
+     */
+    public static boolean disableStatusBar(Context context) {
+        Object service = context.getSystemService("statusbar");
+        try {
+            Class<?> statusBarManager = Class
+                    .forName("android.app.StatusBarManager");
+            Method expand = statusBarManager.getMethod("disable", int.class);
+            //expand.invoke(service, 0x00000000);
+            expand.invoke(service, 0x00010000);
+            return true;
+        } catch (Exception e) {
+            L.e(e);
+        }
+        return false;
+    }
+
 
 }
