@@ -35,18 +35,24 @@ public class InstallUtil {
             return installSilently(apkPath);
         } else {
             // 没有系统权限，用Intent进行安装
-            return installNeedAgree(context, file);
+            installNeedAgree(context, file);
+            return true;
         }
     }
 
-    public static boolean installNeedAgree(Context context, File file) {
+    /**
+     * 系统默认安装
+     * @param context
+     * @param file
+     * @return
+     */
+    public static void installNeedAgree(Context context, File file) {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
         intent.addCategory("android.intent.category.DEFAULT");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
         context.startActivity(intent);
-        return true;
     }
 
     /**
